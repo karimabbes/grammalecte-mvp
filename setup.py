@@ -62,8 +62,8 @@ setup(
     # What does your project relate to?
     keywords='French grammar checker correcteur grammatical français',
 
-    # Scripts
-    scripts=['grammalecte-cli.py', 'grammalecte-server.py'],
+    # Scripts - removed since we deleted the CLI and server files
+    # scripts=['grammalecte-cli.py', 'grammalecte-server.py'],
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
