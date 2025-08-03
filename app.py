@@ -17,9 +17,9 @@ class TextRequest(BaseModel):
     options: dict = None
 
 class Correction(BaseModel):
-    paragraph: int
     start: int
     end: int
+    text: str  # The actual text at the error position
     message: str
     suggestions: list[str]
     rule_id: str | None = None
@@ -42,7 +42,10 @@ async def check_text(req: TextRequest):
     try:
         # Parse text and get errors
         data = []
-        for i, paragraph in enumerate(txt.getParagraph(req.text), 1):
+        paragraphs = list(txt.getParagraph(req.text))
+        current_position = 0
+        
+        for i, paragraph in enumerate(paragraphs, 1):
             if req.format_text:
                 paragraph = text_formatter.formatText(paragraph)
             
@@ -64,10 +67,17 @@ async def check_text(req: TextRequest):
                     # Handle grammar errors
                     if 'lGrammarErrors' in errors:
                         for error in errors['lGrammarErrors']:
+                            # Calculate positions relative to whole text
+                            relative_start = current_position + error.get('nStart', 0)
+                            relative_end = current_position + error.get('nEnd', 0)
+                            
+                            # Extract the actual text at the error position
+                            error_text = req.text[relative_start:relative_end]
+                            
                             correction = Correction(
-                                paragraph=i,
-                                start=error.get('nStart', 0),
-                                end=error.get('nEnd', 0),
+                                start=relative_start,
+                                end=relative_end,
+                                text=error_text,
                                 message=error.get('sMessage', ''),
                                 suggestions=error.get('aSuggestions', []),
                                 rule_id=error.get('sRuleId', None)
@@ -77,10 +87,17 @@ async def check_text(req: TextRequest):
                     # Handle spelling errors
                     if 'lSpellingErrors' in errors:
                         for error in errors['lSpellingErrors']:
+                            # Calculate positions relative to whole text
+                            relative_start = current_position + error.get('nStart', 0)
+                            relative_end = current_position + error.get('nEnd', 0)
+                            
+                            # Extract the actual text at the error position
+                            error_text = req.text[relative_start:relative_end]
+                            
                             correction = Correction(
-                                paragraph=i,
-                                start=error.get('nStart', 0),
-                                end=error.get('nEnd', 0),
+                                start=relative_start,
+                                end=relative_end,
+                                text=error_text,
                                 message=f"Spelling error: {error.get('sValue', '')}",
                                 suggestions=error.get('aSuggestions', []),
                                 rule_id=error.get('sRuleId', None)
@@ -90,6 +107,9 @@ async def check_text(req: TextRequest):
             except json.JSONDecodeError as e:
                 # If JSON parsing fails, skip this result
                 pass
+            
+            # Update position for next paragraph
+            current_position += len(paragraph) + 1  # +1 for the newline character
         
         return CheckResponse(
             version=gc_engine.version,

@@ -94,12 +94,12 @@ Check text for grammar and spelling errors.
   "lang": "fr",
   "data": [
     {
-      "paragraph": 1,
       "start": 0,
-      "end": 4,
-      "message": "Grammar error description",
-      "suggestions": ["suggestion1", "suggestion2"],
-      "rule_id": "RULE_ID"
+      "end": 8,
+      "text": "Bonjouwr",
+      "message": "Spelling error: Bonjouwr",
+      "suggestions": ["bonjour", "bonjours"],
+      "rule_id": null
     }
   ]
 }
