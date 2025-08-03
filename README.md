@@ -5,51 +5,78 @@ A minimal FastAPI application that wraps the Grammalecte grammar checker for Fre
 ## Local Setup
 
 1. Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 2. Install Grammalecte locally:
+
 ```bash
 pip install -e .
 ```
 
 3. Run the application:
+
 ```bash
 python run.py
 ```
 
 Or alternatively:
+
 ```bash
 uvicorn app:app --reload
 ```
 
 The API will be available at `http://localhost:8000`
 
-## Railway Deployment
+## Deployment Options
+
+### Railway Deployment
 
 This project is configured for Railway deployment.
 
-### Railway Setup:
+#### Railway Setup:
+
 1. Connect your GitHub repository to Railway
 2. Railway will automatically detect the Python project
 3. The app will be deployed using `railway_start.py`
 
-### Environment Variables:
+#### Environment Variables:
+
 - `PORT`: Automatically set by Railway
+
+### Render Deployment
+
+This project is also configured for Render deployment.
+
+#### Render Setup:
+
+1. Connect your GitHub repository to Render
+2. Render will automatically detect the Python project
+3. The app will be deployed using `render_start.py`
+
+#### Environment Variables:
+
+- `PORT`: Automatically set by Render
+- `PYTHON_VERSION`: Set to 3.11
 
 ## API Endpoints
 
 ### GET /
+
 Health check endpoint that returns a simple message.
 
 ### GET /health
+
 Health check endpoint that returns the service status and version information.
 
 ### POST /check
+
 Check text for grammar and spelling errors.
 
 **Request Body:**
+
 ```json
 {
   "text": "Your French text to check here.",
@@ -59,6 +86,7 @@ Check text for grammar and spelling errors.
 ```
 
 **Response:**
+
 ```json
 {
   "program": "grammalecte-fr",
@@ -78,9 +106,11 @@ Check text for grammar and spelling errors.
 ```
 
 ### GET /suggest/{token}
+
 Get spelling suggestions for a specific token.
 
 **Response:**
+
 ```json
 {
   "suggestions": ["suggestion1", "suggestion2", "suggestion3"]
@@ -88,17 +118,20 @@ Get spelling suggestions for a specific token.
 ```
 
 ### GET /options
+
 Get available grammar checking options and their default values.
 
 ## Interactive API Documentation
 
 Once the server is running, you can access:
+
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
 ## Example Usage
 
 ### Check text for errors:
+
 ```bash
 curl -X POST "http://localhost:8000/check" \
      -H "Content-Type: application/json" \
@@ -106,11 +139,13 @@ curl -X POST "http://localhost:8000/check" \
 ```
 
 ### Get spelling suggestions:
+
 ```bash
 curl -X GET "http://localhost:8000/suggest/bonjour"
 ```
 
 ### Check with custom options:
+
 ```bash
 curl -X POST "http://localhost:8000/check" \
      -H "Content-Type: application/json" \
@@ -120,6 +155,7 @@ curl -X POST "http://localhost:8000/check" \
 ## Demo
 
 Run the demo script to test the API:
+
 ```bash
 python demo.py
 ```
@@ -134,7 +170,8 @@ python demo.py
 - ✅ Health monitoring
 - ✅ Error handling
 - ✅ Railway deployment ready
+- ✅ Render deployment ready
 
 ## Grammalecte Information
 
-This API uses Grammalecte v2.1.1, a French grammar checker. The original Grammalecte project can be found at: http://grammalecte.net 
+This API uses Grammalecte v2.1.1, a French grammar checker. The original Grammalecte project can be found at: http://grammalecte.net
